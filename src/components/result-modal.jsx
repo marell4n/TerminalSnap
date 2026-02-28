@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 
 export default function ResultModal({ asciiResult, onClose }) {
-  const [previewImg, setPreviewImg] = useState(null);
+  const [darkPreview, setDarkPreview] = useState(null);
+  const [lightPreview, setLightPreview] = useState(null);
+  const [isHovered, setIsHovered] = useState(false);
 
   const generateCanvas = (theme, callback) => {
     const canvas = document.createElement("canvas");
@@ -21,7 +23,7 @@ export default function ResultModal({ asciiResult, onClose }) {
 
     const drawContent = (logoImg) => {
       if (logoImg) {
-        const logoWidth = 400;
+        const logoWidth = 500;
         const logoHeight = (logoImg.height / logoImg.width) * logoWidth;
         ctx.drawImage(
           logoImg,
@@ -41,6 +43,7 @@ export default function ResultModal({ asciiResult, onClose }) {
       ctx.font = "bold 8px monospace";
       ctx.fillStyle = textColor;
       ctx.textAlign = "left";
+      ctx.letterSpacing = "2px";
 
       const lines = asciiResult.split("\n");
       const textWidth = ctx.measureText(lines[0]).width;
@@ -52,11 +55,13 @@ export default function ResultModal({ asciiResult, onClose }) {
         currentY += 8;
       });
 
+      ctx.letterSpacing = "0px";
+
       const footerY = currentY + 80;
       ctx.font = '24px "Courier New", monospace';
 
       const today = new Date();
-      const dateStr = `DD/MM/YYYY: ${today.getDate().toString().padStart(2, "0")}/${(today.getMonth() + 1).toString().padStart(2, "0")}/${today.getFullYear()}`;
+      const dateStr = `${today.getDate().toString().padStart(2, "0")}/${(today.getMonth() + 1).toString().padStart(2, "0")}/${today.getFullYear()}`;
       ctx.fillText(dateStr, startX, footerY);
 
       ctx.beginPath();
@@ -84,7 +89,10 @@ export default function ResultModal({ asciiResult, onClose }) {
 
   useEffect(() => {
     generateCanvas("dark", (dataUrl) => {
-      setPreviewImg(dataUrl);
+      setDarkPreview(dataUrl);
+    });
+    generateCanvas("light", (dataUrl) => {
+      setLightPreview(dataUrl);
     });
   }, [asciiResult]);
 
@@ -106,11 +114,19 @@ export default function ResultModal({ asciiResult, onClose }) {
 
         <div className="receipt-container mb-4">
           <div className="receipt">
-            {previewImg ? (
+            {darkPreview && lightPreview ? (
               <img
-                src={previewImg}
+                src={isHovered ? lightPreview : darkPreview} 
                 alt="Terminal Receipt"
-                style={{ width: "100%", maxWidth: "350px", display: "block" }}
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+                style={{ 
+                  width: "100%", 
+                  maxWidth: "350px", 
+                  display: "block",
+                  cursor: "crosshair",
+                  transition: "opacity 0.2s ease-in-out" 
+                }}
               />
             ) : (
               <p className="m-5">/// GENERATING_IMAGE... \\\</p>
@@ -118,7 +134,6 @@ export default function ResultModal({ asciiResult, onClose }) {
           </div>
         </div>
 
-        {/* Tombol-tombol Download */}
         <div className="d-flex justify-content-center flex-wrap gap-3 mt-4">
           <button
             className="btn btn-terminal px-4 py-2 fw-bold"
