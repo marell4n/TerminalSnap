@@ -94,3 +94,27 @@ video, .captured-img {
   0% { transform: translateY(-100%); }
   100% { transform: translateY(0); }
 }
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(5px);
+}
+
+.modal-terminal {
+  background-color: var(--term-bg);
+  border: 2px solid var(--term-color);
+  padding: 2rem;
+  max-width: 90vw;
+  max-height: 95vh;
+  overflow-y: auto;
+  box-shadow: 0 0 30px rgba(195, 253, 255, 0.2);
+}

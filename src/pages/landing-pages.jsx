@@ -26,7 +26,7 @@ export default function LandingPage() {
     <div className="text-center mt-5">
       <div>
         <img
-          src="/src/assets/logo.png"
+          src="/src/assets/logo-cyan.png"
           alt="Terminal Snap Logo"
           className="img-fluid mb-4"
         />
