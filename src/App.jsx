@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import LandingPage from "./pages/landing-pages.jsx";
+import LandingPage from "./pages/landing-page.jsx";
 import TakePicturePage from './pages/booth.jsx';
 
 export default function App() {

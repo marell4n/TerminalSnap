@@ -23,23 +23,27 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className="text-center mt-5">
+    <div
+      className="text-center d-flex flex-column justify-content-center align-items-center"
+      style={{ height: "90vh" }}
+    >
       <div>
         <img
           src="/src/assets/logo-cyan.png"
-          alt="Terminal Snap Logo"
-          className="img-fluid mb-4"
+          alt="TerminalSnap Logo"
+          className="img-fluid mb-3"
+          style={{ maxHeight: "18vh", objectFit: "contain" }}
         />
       </div>
 
       {/* Container Dummy Art */}
-      <div className="d-flex justify-content-center mb-5">
+      <div className="d-flex justify-content-center mb-4">
         <pre
           className="ascii-display p-4"
           style={{
             borderColor: "var(--term-color)",
-            fontSize: "25px",
-            lineHeight: "30px",
+            fontSize: "3vh",
+            lineHeight: "3.2vh",
           }}
         >
           {DUMMY_ARTS[artIndex]}

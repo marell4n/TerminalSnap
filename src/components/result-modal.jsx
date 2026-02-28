@@ -122,8 +122,9 @@ export default function ResultModal({ asciiResult, onClose }) {
                 onMouseLeave={() => setIsHovered(false)}
                 style={{ 
                   width: "100%", 
-                  maxWidth: "350px", 
+                  maxWidth: "35vh", 
                   display: "block",
+                  margin: "0 auto",
                   cursor: "crosshair",
                   transition: "opacity 0.2s ease-in-out" 
                 }}

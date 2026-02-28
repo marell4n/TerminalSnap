@@ -131,7 +131,7 @@ export default function TakePicturePage() {
   };
 
   return (
-    <div className="text-center position-relative mt-4">
+    <div className="text-center position-relative mt-2">
       {flash && <div className="flash-effect"></div>}
 
       <div className="d-flex justify-content-between align-items-center mb-4">

@@ -9,6 +9,7 @@ body {
   font-family: 'Courier New', Courier, monospace; 
   margin: 0;
   overflow-x: hidden;
+  height: 100vh;
 }
 
 /* Button styles */
@@ -45,7 +46,9 @@ video, .captured-img {
   transform: scaleX(-1); 
   border: 2px solid var(--term-color);
   width: 100%;
-  max-width: 500px;
+  max-height: 50vh;
+  object-fit: cover;
+  margin: 0 auto;
 }
 
 .flash-effect {
@@ -112,9 +115,9 @@ video, .captured-img {
 .modal-terminal {
   background-color: var(--term-bg);
   border: 2px solid var(--term-color);
-  padding: 2rem;
+  padding: 1.5rem;
   max-width: 90vw;
-  max-height: 95vh;
+  max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 0 30px rgba(195, 253, 255, 0.2);
 }
