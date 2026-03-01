@@ -8,11 +8,15 @@ export default function ResultModal({ asciiResult, onClose }) {
   const [isHovered, setIsHovered] = useState(false);
 
   const generateCanvas = (theme, callback) => {
+    // Split the ASCII result into lines for proper rendering
+    const lines = asciiResult.split("\n");
+
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
 
     const width = 900;
-    const height = 1200;
+    const height = 340 + (lines.length * 8) + 250; // Logo Area (340) + Height Photo (sum of lines * 8px) + Footer Area (250)
+
     canvas.width = width;
     canvas.height = height;
 
@@ -46,8 +50,7 @@ export default function ResultModal({ asciiResult, onClose }) {
       ctx.fillStyle = textColor;
       ctx.textAlign = "left";
       ctx.letterSpacing = "3px";
-
-      const lines = asciiResult.split("\n");
+      
       const textWidth = ctx.measureText(lines[0]).width;
       const startX = (width - textWidth) / 2;
 
