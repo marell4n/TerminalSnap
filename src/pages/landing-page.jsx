@@ -25,7 +25,7 @@ export default function LandingPage() {
   return (
     <div
       className="text-center d-flex flex-column justify-content-center align-items-center"
-      style={{ height: "90vh" }}
+      style={{ height: "100vh" }}
     >
       <div>
         <img
@@ -50,7 +50,8 @@ export default function LandingPage() {
         </pre>
       </div>
 
-      <p className="mb-4 fs-5">/// Photobooth with ASCII art. \\\</p>
+      <p className="fs-5 fw-bold">/// Photobooth with ASCII art. \\\</p>
+      <p style={{ fontSize: "2vh" }}>Turn your everyday webcam snapshots into retro, terminal-style ASCII masterpieces!</p>
 
       <button
         className="btn btn-terminal px-5 py-3 fs-5 fw-bold"
