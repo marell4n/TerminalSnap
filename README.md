@@ -1,16 +1,28 @@
-# React + Vite
+# TerminalSnap
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+ **Photobooth with ASCII art.** 
+ Turn your everyday webcam snapshots into retro, terminal-style ASCII masterpieces!
 
-Currently, two official plugins are available:
+ ## Features:
+ * **Webcam Integration:** Seamlessly capture photos directly from your browser.
+* **Adjustable Timer:** Choose between No Timer, 3 seconds, or 5 seconds for the perfect pose.
+* **Realistic Flash:** A built-in screen flash effect with precise timing to illuminate your face in dark environments.
+* **Advanced ASCII Conversion:** Uses luminance, contrast (+50%), and brightness (+20%) adjustments to map pixels into ASCII characters accurately.
+* **Dark & Light Themes:** Hover over the generated receipt to preview and choose between a Dark or Light theme before downloading.
+* **Downloadable Receipt:** Generates a high-quality, ATM-style JPEG receipt containing your ASCII art, the current date, and a cool quote.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tech Stack
+* **Frontend:** React.js (Vite)
+* **Routing:** React Router DOM
+* **Styling:** CSS3 & Bootstrap 5
+* **Processing:** HTML5 Canvas API (for image manipulation and receipt generation)
 
-## React Compiler
+## How to Use
+1. Click **[ TRY_NOW ]** on the landing page.
+2. Allow camera permissions in your browser.
+2. Select your preferred timer and toggle the flash if needed.
+3. Click **[ CAPTURE ]** and strike a pose!
+4. Click **[ CONVERT_TO_ASCII ]** to process your image.
+5. Hover over the receipt to see the Light version, then click your preferred **[ SAVE ]** button to download the JPEG.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+*Created with 💻 and ☕ by **marell4n***
