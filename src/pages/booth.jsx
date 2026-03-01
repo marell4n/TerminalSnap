@@ -33,24 +33,41 @@ export default function TakePicturePage() {
   const [showModal, setShowModal] = useState(false);
   const [asciiResult, setAsciiResult] = useState("");
 
-  // Start Camera
+  // Start & Stop Camera
   useEffect(() => {
-    if (!capturedImg) {
+    let isMounted = true;
+    let activeStream = null;
+
+    // Start Camera if not captured yet and modal is not open
+    if (!capturedImg && !showModal) {
       navigator.mediaDevices
         .getUserMedia({ video: true })
         .then((stream) => {
-          if (videoRef.current) videoRef.current.srcObject = stream;
+          if (isMounted && videoRef.current) {
+            videoRef.current.srcObject = stream;
+            activeStream = stream;
+          } else {
+            stream.getTracks().forEach((track) => track.stop());
+          }
         })
         .catch((err) => console.error("Kamera error:", err));
     }
-    // Off Camera
+    // Off Camera if state changed and switching page
     return () => {
+      isMounted = false;
+
+      // Stop stream from local state
+      if (activeStream) {
+        activeStream.getTracks().forEach((track) => track.stop());
+      }
+
+      // Cleanup stream from videoRef
       if (videoRef.current && videoRef.current.srcObject) {
         const stream = videoRef.current.srcObject;
         stream.getTracks().forEach((track) => track.stop());
       }
     };
-  }, [capturedImg]);
+  }, [capturedImg, showModal]);
 
   const handleTakePhoto = () => {
     if (timerStatus === 0) {
@@ -88,11 +105,11 @@ export default function TakePicturePage() {
       setTimeout(() => {
         takePhoto();
         setTimeout(() => {
-            setFlash(false);
+          setFlash(false);
         }, 100);
-        }, 150);
+      }, 150);
     } else {
-        takePhoto();
+      takePhoto();
     }
   };
 
