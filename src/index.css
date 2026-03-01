@@ -121,7 +121,7 @@ video, .captured-img {
 .modal-terminal {
   background-color: var(--term-bg);
   border: 2px solid var(--term-color);
-  padding: 1.5rem;
+  padding: 1rem;
   max-width: 90vw;
   max-height: 90vh;
   overflow-y: auto;

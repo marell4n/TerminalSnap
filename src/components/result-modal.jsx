@@ -137,8 +137,10 @@ export default function ResultModal({ asciiResult, onClose }) {
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
                 style={{
-                  width: "100%",
-                  maxWidth: "35vh",
+                  width: "auto",
+                  height: "auto",
+                  maxWidth: "100%",
+                  maxHeight: "35vh",
                   display: "block",
                   margin: "0 auto",
                   cursor: "crosshair",
