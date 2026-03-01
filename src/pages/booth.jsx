@@ -215,7 +215,7 @@ export default function TakePicturePage() {
       <div>
         {!capturedImg ? (
           <>
-            <div className="d-flex justify-content-center flex-wrap gap-3 mb-4">
+            <div className="d-flex justify-content-center flex-wrap gap-2 mb-2">
               <div className="btn-group" role="group">
                 <button
                   className={`btn btn-terminal ${timerStatus === 0 ? "active" : ""}`}
@@ -246,7 +246,7 @@ export default function TakePicturePage() {
             </div>
             <br />
             <button
-              className="btn btn-terminal px-5 py-3 fs-4 fw-bold"
+              className="btn btn-terminal px-3 py-2 fs-3 fw-bold"
               onClick={handleTakePhoto}
               disabled={countdown !== null}
             >

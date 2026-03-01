@@ -38,7 +38,7 @@ export default function LandingPage() {
       </div>
 
       {/* Container Dummy Art */}
-      <div className="d-flex justify-content-center mb-4">
+      <div className="d-flex justify-content-center">
         <pre
           className="ascii-display p-4"
           style={{
