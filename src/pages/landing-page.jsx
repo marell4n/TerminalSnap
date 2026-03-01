@@ -34,6 +34,7 @@ export default function LandingPage() {
           className="img-fluid mb-3"
           style={{ maxHeight: "18vh", objectFit: "contain" }}
         />
+        <p style={{ fontSize: "1.5vh" }}>by: marell4n</p>
       </div>
 
       {/* Container Dummy Art */}
@@ -41,7 +42,6 @@ export default function LandingPage() {
         <pre
           className="ascii-display p-4"
           style={{
-            borderColor: "var(--term-color)",
             fontSize: "3vh",
             lineHeight: "3.2vh",
           }}
@@ -58,6 +58,26 @@ export default function LandingPage() {
       >
         [ TRY_NOW ]
       </button>
+
+      <footer className="mt-5" style={{ fontSize: "1.5vh" }}>
+        <a
+          href="https://github.com/marell4n"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: "var(--term-color)" }}
+        >
+          GitHub
+        </a>
+        {" || "}
+        <a
+          href="https://www.instagram.com/https.marell4n"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: "var(--term-color)" }}
+        >
+          Instagram
+        </a>
+      </footer>
     </div>
   );
 }
