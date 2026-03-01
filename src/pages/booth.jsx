@@ -71,19 +71,28 @@ export default function TakePicturePage() {
   };
 
   const executeCapture = () => {
+    const takePhoto = () => {
+      if (videoRef.current && canvasRef.current) {
+        const video = videoRef.current;
+        const canvas = canvasRef.current;
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext("2d");
+        ctx?.drawImage(video, 0, 0, canvas.width, canvas.height);
+        setCapturedImg(canvas.toDataURL("image/png"));
+      }
+    };
+
     if (isFlashEnabled) {
       setFlash(true);
-      setTimeout(() => setFlash(false), 800);
-    }
-
-    if (videoRef.current && canvasRef.current) {
-      const video = videoRef.current;
-      const canvas = canvasRef.current;
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      const ctx = canvas.getContext("2d");
-      ctx?.drawImage(video, 0, 0, canvas.width, canvas.height);
-      setCapturedImg(canvas.toDataURL("image/png"));
+      setTimeout(() => {
+        takePhoto();
+        setTimeout(() => {
+            setFlash(false);
+        }, 100);
+        }, 150);
+    } else {
+        takePhoto();
     }
   };
 

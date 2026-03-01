@@ -60,7 +60,7 @@ video, .captured-img {
   background-color: white;
   z-index: 9999;
   pointer-events: none;
-  animation: flashAnim 2s forwards;
+  animation: flashAnim 3s forwards;
 }
 
 @keyframes flashAnim {
