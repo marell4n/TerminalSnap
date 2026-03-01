@@ -106,8 +106,8 @@ export default function TakePicturePage() {
         takePhoto();
         setTimeout(() => {
           setFlash(false);
-        }, 100);
-      }, 150);
+        }, 200);
+      }, 250);
     } else {
       takePhoto();
     }
