@@ -23,6 +23,12 @@ body {
   transition: all 0.3s ease;
 }
 
+.btn-terminal.light {
+  background-color: white;
+  color: var(--term-bg);
+  border: 1px solid var(--term-color);
+}
+
 .btn-terminal:hover {
   background-color: var(--term-color);
   color: var(--term-bg);

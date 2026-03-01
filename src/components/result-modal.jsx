@@ -9,7 +9,7 @@ export default function ResultModal({ asciiResult, onClose }) {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
 
-    const width = 800;
+    const width = 900;
     const height = 1200;
     canvas.width = width;
     canvas.height = height;
@@ -23,7 +23,7 @@ export default function ResultModal({ asciiResult, onClose }) {
 
     const drawContent = (logoImg) => {
       if (logoImg) {
-        const logoWidth = 500;
+        const logoWidth = 550;
         const logoHeight = (logoImg.height / logoImg.width) * logoWidth;
         ctx.drawImage(
           logoImg,
@@ -39,11 +39,11 @@ export default function ResultModal({ asciiResult, onClose }) {
         ctx.fillText("Terminal Snap", width / 2, 150);
       }
 
-      const startY = 320;
+      const startY = 340;
       ctx.font = "bold 8px monospace";
       ctx.fillStyle = textColor;
       ctx.textAlign = "left";
-      ctx.letterSpacing = "2px";
+      ctx.letterSpacing = "3px";
 
       const lines = asciiResult.split("\n");
       const textWidth = ctx.measureText(lines[0]).width;
@@ -57,24 +57,37 @@ export default function ResultModal({ asciiResult, onClose }) {
 
       ctx.letterSpacing = "0px";
 
-      const footerY = currentY + 80;
+      let footerY = currentY + 30;
       ctx.font = '24px "Courier New", monospace';
+
+      const quote =
+        "No pixels were harmed in the making of \nthis photo. Only characters.";
+      const quoteLines = quote.split("\n");
+      const lineHeight = 26;
+
+      quoteLines.forEach((line, index) => {
+        ctx.fillText(line, startX, footerY);
+        footerY += lineHeight;
+      });
+      footerY += 15;
 
       const today = new Date();
       const dateStr = `${today.getDate().toString().padStart(2, "0")}/${(today.getMonth() + 1).toString().padStart(2, "0")}/${today.getFullYear()}`;
       ctx.fillText(dateStr, startX, footerY);
 
+      footerY += 40;
       ctx.beginPath();
       ctx.setLineDash([15, 10]);
-      ctx.moveTo(startX, footerY + 40);
-      ctx.lineTo(startX + textWidth, footerY + 40);
+      ctx.moveTo(startX, footerY);
+      ctx.lineTo(startX + textWidth, footerY);
       ctx.strokeStyle = textColor;
       ctx.lineWidth = 2;
       ctx.stroke();
 
+      footerY += 60;
       ctx.textAlign = "center";
       ctx.setLineDash([]);
-      ctx.fillText("terminalsnap.vercel.app", width / 2, footerY + 110);
+      ctx.fillText("terminalsnap.vercel.app", width / 2, footerY);
 
       callback(canvas.toDataURL("image/jpeg", 1.0));
     };
@@ -108,25 +121,26 @@ export default function ResultModal({ asciiResult, onClose }) {
   return (
     <div className="modal-overlay">
       <div className="modal-terminal text-center">
-        <h3 className="mb-4">/// PROCESSING_COMPLETE \\\</h3>
+        <h3 className="mb-2">/// PROCESSING_COMPLETE \\\</h3>
+        <p className="mb-4">Hover to see dark theme.</p>
 
         <div className="atm-machine"></div>
 
-        <div className="receipt-container mb-4">
+        <div className="receipt-container mb-4 mt-2">
           <div className="receipt">
             {darkPreview && lightPreview ? (
               <img
-                src={isHovered ? lightPreview : darkPreview} 
+                src={isHovered ? darkPreview : lightPreview}
                 alt="Terminal Receipt"
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
-                style={{ 
-                  width: "100%", 
-                  maxWidth: "35vh", 
+                style={{
+                  width: "100%",
+                  maxWidth: "35vh",
                   display: "block",
                   margin: "0 auto",
                   cursor: "crosshair",
-                  transition: "opacity 0.2s ease-in-out" 
+                  transition: "opacity 0.2s ease-in-out",
                 }}
               />
             ) : (
@@ -146,23 +160,13 @@ export default function ResultModal({ asciiResult, onClose }) {
           <button
             className="btn btn-terminal px-4 py-2 fw-bold"
             onClick={() => handleSaveImage("dark")}
-            style={{
-              backgroundColor: "#000",
-              color: "var(--term-color)",
-              border: "1px solid var(--term-color)",
-            }}
           >
             [ SAVE DARK .JPG ]
           </button>
 
           <button
-            className="btn px-4 py-2 fw-bold"
+            className="btn btn-terminal light px-4 py-2 fw-bold"
             onClick={() => handleSaveImage("light")}
-            style={{
-              backgroundColor: "#fff",
-              color: "#000",
-              border: "1px solid #000",
-            }}
           >
             [ SAVE LIGHT .JPG ]
           </button>

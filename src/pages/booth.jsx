@@ -138,13 +138,19 @@ export default function TakePicturePage() {
       const pixels = ctx.getImageData(0, 0, newWidth, newHeight).data;
       let asciiStr = "";
 
+      const brightnessFactor = 1.2; // 1.2 = +20%
+      const contrastFactor = 1.5;   // 1.5 = +50%
+
       for (let i = 0; i < pixels.length; i += 4) {
         const r = pixels[i];
         const g = pixels[i + 1];
         const b = pixels[i + 2];
-        const brightness = (r + g + b) / 3;
+        // Change to grayscale with brightness and contrast adjustment
+        let gray = 0.299 * r + 0.587 * g + 0.114 * b;
+        gray = ((gray - 128) * contrastFactor + 128) * brightnessFactor;
+        gray = Math.max(0, Math.min(255, gray));
         const charIndex = Math.floor(
-          (brightness / 255) * (ASCII_CHARS.length - 1),
+          (gray / 255) * (ASCII_CHARS.length - 1),
         );
         asciiStr += ASCII_CHARS[charIndex];
         if ((i / 4 + 1) % newWidth === 0) asciiStr += "\n";
