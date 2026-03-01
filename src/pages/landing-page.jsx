@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import logoCyan from '../assets/logo-cyan.png'
 
 const DUMMY_ARTS = [
   "@@@@@@@@@@\n@        @\n@  O  O  @\n@   <>   @\n@  ____  @\n@        @\n@@@@@@@@@@",
@@ -29,7 +30,7 @@ export default function LandingPage() {
     >
       <div>
         <img
-          src="/src/assets/logo-cyan.png"
+          src={logoCyan}
           alt="TerminalSnap Logo"
           className="img-fluid mb-3"
           style={{ maxHeight: "18vh", objectFit: "contain" }}

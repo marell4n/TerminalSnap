@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import logoCyan from '../assets/logo-cyan.png';
+import logoBlack from '../assets/logo-black.png';
 
 export default function ResultModal({ asciiResult, onClose }) {
   const [darkPreview, setDarkPreview] = useState(null);
@@ -94,8 +96,8 @@ export default function ResultModal({ asciiResult, onClose }) {
 
     const logo = new Image();
     logo.src = isDark
-      ? "/src/assets/logo-cyan.png"
-      : "/src/assets/logo-black.png";
+      ? logoCyan
+      : logoBlack;
     logo.onload = () => drawContent(logo);
     logo.onerror = () => drawContent(null);
   };
