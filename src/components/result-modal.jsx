@@ -14,7 +14,7 @@ export default function ResultModal({ asciiResult, onClose }) {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
 
-    const width = 950;
+    const width = 1000;
     const height = 340 + (lines.length * 8) + 250; // Logo Area (340) + Height Photo (sum of lines * 8px) + Footer Area (250)
 
     canvas.width = width;
@@ -29,7 +29,7 @@ export default function ResultModal({ asciiResult, onClose }) {
 
     const drawContent = (logoImg) => {
       if (logoImg) {
-        const logoWidth = 550;
+        const logoWidth = 580;
         const logoHeight = (logoImg.height / logoImg.width) * logoWidth;
         ctx.drawImage(
           logoImg,
@@ -45,11 +45,11 @@ export default function ResultModal({ asciiResult, onClose }) {
         ctx.fillText("Terminal Snap", width / 2, 150);
       }
 
-      const startY = 340;
-      ctx.font = "bold 8px monospace";
+      const startY = 380;
+      ctx.font = "bold 6px monospace";
       ctx.fillStyle = textColor;
       ctx.textAlign = "left";
-      ctx.letterSpacing = "3.5px";
+      ctx.letterSpacing = "4px";
       
       const textWidth = ctx.measureText(lines[0]).width;
       const startX = (width - textWidth) / 2;
@@ -57,13 +57,13 @@ export default function ResultModal({ asciiResult, onClose }) {
       let currentY = startY;
       lines.forEach((line) => {
         ctx.fillText(line, startX, currentY);
-        currentY += 8;
+        currentY += 7;
       });
 
       ctx.letterSpacing = "0px";
 
       let footerY = currentY + 30;
-      ctx.font = '24px "Courier New", monospace';
+      ctx.font = '30px "Courier New", monospace';
 
       const quote =
         "No pixels were harmed in the making of \nthis photo. Only characters.";

@@ -131,8 +131,7 @@ export default function TakePicturePage() {
       const ctx = canvas.getContext("2d", { willReadFrequently: true });
       if (!ctx) return;
 
-      const newWidth = 100;
-      const fontRatio = 0.55; // Adjust this ratio to better fit the font's aspect ratio
+      const newWidth = 120;
       const aspectRatio = img.height / img.width;
       const newHeight = Math.floor(aspectRatio * newWidth);
 
@@ -148,8 +147,8 @@ export default function TakePicturePage() {
       const pixels = ctx.getImageData(0, 0, newWidth, newHeight).data;
       let asciiStr = "";
 
-      const brightnessFactor = 1.2; // 1.2 = +20%
-      const contrastFactor = 1.5;   // 1.5 = +50%
+      const brightnessFactor = 1.89; // = +89%
+      const contrastFactor = 1.15;   // = +50%
 
       for (let i = 0; i < pixels.length; i += 4) {
         const r = pixels[i];
