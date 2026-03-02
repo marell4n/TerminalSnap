@@ -49,7 +49,7 @@ export default function ResultModal({ asciiResult, onClose }) {
       ctx.font = "bold 6px monospace";
       ctx.fillStyle = textColor;
       ctx.textAlign = "left";
-      ctx.letterSpacing = "4px";
+      ctx.letterSpacing = "3.5px";
       
       const textWidth = ctx.measureText(lines[0]).width;
       const startX = (width - textWidth) / 2;
@@ -65,8 +65,7 @@ export default function ResultModal({ asciiResult, onClose }) {
       let footerY = currentY + 30;
       ctx.font = '30px "Courier New", monospace';
 
-      const quote =
-        "No pixels were harmed in the making of \nthis photo. Only characters.";
+      const quote = "No pixels were harmed in the making of \nthis photo. Only characters.";
       const quoteLines = quote.split("\n");
       const lineHeight = 26;
 
