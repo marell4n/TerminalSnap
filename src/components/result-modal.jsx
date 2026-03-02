@@ -14,7 +14,7 @@ export default function ResultModal({ asciiResult, onClose }) {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
 
-    const width = 900;
+    const width = 950;
     const height = 340 + (lines.length * 8) + 250; // Logo Area (340) + Height Photo (sum of lines * 8px) + Footer Area (250)
 
     canvas.width = width;
@@ -49,7 +49,7 @@ export default function ResultModal({ asciiResult, onClose }) {
       ctx.font = "bold 8px monospace";
       ctx.fillStyle = textColor;
       ctx.textAlign = "left";
-      ctx.letterSpacing = "3px";
+      ctx.letterSpacing = "3.5px";
       
       const textWidth = ctx.measureText(lines[0]).width;
       const startX = (width - textWidth) / 2;

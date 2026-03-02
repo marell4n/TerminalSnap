@@ -92,10 +92,19 @@ export default function TakePicturePage() {
       if (videoRef.current && canvasRef.current) {
         const video = videoRef.current;
         const canvas = canvasRef.current;
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
+
+        const size = Math.min(video.videoWidth, video.videoHeight);
+
+        const startX = (video.videoWidth - size) / 2;
+        const startY = (video.videoHeight - size) / 2;
+
+        canvas.width = size;
+        canvas.height = size;
+        
         const ctx = canvas.getContext("2d");
-        ctx?.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        // Cut the center square from video feed and draw to canvas
+        ctx?.drawImage(video, startX, startY, size, size, 0, 0, size, size);
         setCapturedImg(canvas.toDataURL("image/png"));
       }
     };
@@ -123,6 +132,7 @@ export default function TakePicturePage() {
       if (!ctx) return;
 
       const newWidth = 100;
+      const fontRatio = 0.55; // Adjust this ratio to better fit the font's aspect ratio
       const aspectRatio = img.height / img.width;
       const newHeight = Math.floor(aspectRatio * newWidth);
 
@@ -184,7 +194,7 @@ export default function TakePicturePage() {
               autoPlay
               playsInline
               muted
-              style={{ width: "100%", maxWidth: "800px", display: "block" }}
+              style={{ width: "100%", maxWidth: "800px", aspectRatio: "1 / 1", objectFit: "cover", display: "block", margin: "0 auto" }}
             />
             {countdown !== null && (
               <h1
@@ -204,7 +214,7 @@ export default function TakePicturePage() {
             src={capturedImg}
             alt="Captured"
             className="captured-img"
-            style={{ width: "100%", maxWidth: "800px", display: "block" }}
+            style={{ width: "100%", maxWidth: "800px", aspectRatio: "1 / 1", objectFit: "cover", display: "block", margin: "0 auto" }}
           />
         )}
       </div>
