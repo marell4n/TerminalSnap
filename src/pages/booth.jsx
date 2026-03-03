@@ -28,6 +28,7 @@ export default function TakePicturePage() {
   const [flash, setFlash] = useState(false);
   const [isFlashEnabled, setIsFlashEnabled] = useState(true);
   const [capturedImg, setCapturedImg] = useState(null);
+  const [isFrontCamera, setIsFrontCamera] = useState(true);
 
   // State Modal
   const [showModal, setShowModal] = useState(false);
@@ -41,7 +42,11 @@ export default function TakePicturePage() {
     // Start Camera if not captured yet and modal is not open
     if (!capturedImg && !showModal) {
       navigator.mediaDevices
-        .getUserMedia({ video: true })
+        .getUserMedia({
+          video: {
+            facingMode: isFrontCamera ? "user" : "environment",
+          },
+        })
         .then((stream) => {
           if (isMounted && videoRef.current) {
             videoRef.current.srcObject = stream;
@@ -67,7 +72,7 @@ export default function TakePicturePage() {
         stream.getTracks().forEach((track) => track.stop());
       }
     };
-  }, [capturedImg, showModal]);
+  }, [capturedImg, showModal, isFrontCamera]);
 
   const handleTakePhoto = () => {
     if (timerStatus === 0) {
@@ -109,7 +114,7 @@ export default function TakePicturePage() {
       }
     };
 
-    if (isFlashEnabled) {
+    if (isFlashEnabled && isFrontCamera) {
       setFlash(true);
       setTimeout(() => {
         takePhoto();
@@ -213,6 +218,7 @@ export default function TakePicturePage() {
                 objectFit: "cover",
                 display: "block",
                 margin: "0 auto",
+                transform: isFrontCamera ? "scaleX(-1)" : "none",
               }}
             />
             {countdown !== null && (
@@ -240,6 +246,7 @@ export default function TakePicturePage() {
               objectFit: "cover",
               display: "block",
               margin: "0 auto",
+              transform: isFrontCamera ? "scaleX(-1)" : "none",
             }}
           />
         )}
@@ -274,10 +281,21 @@ export default function TakePicturePage() {
               </div>
 
               <button
-                className={`btn btn-terminal ${isFlashEnabled ? "active" : ""}`}
-                onClick={() => setIsFlashEnabled(!isFlashEnabled)}
+                className="btn btn-terminal"
+                onClick={() => setIsFrontCamera(!isFrontCamera)}
               >
-                FLASH: {isFlashEnabled ? "ON" : "OFF"}
+                [ FLIP_CAM ]
+              </button>
+
+              <button
+                className={`btn btn-terminal ${isFlashEnabled && isFrontCamera ? "active" : ""}`}
+                onClick={() => setIsFlashEnabled(!isFlashEnabled)}
+                disabled={!isFrontCamera}
+                style={{ opacity: !isFrontCamera ? 0.5 : 1 }}
+              >
+                {isFrontCamera
+                  ? `FLASH: ${isFlashEnabled ? "ON" : "OFF"}`
+                  : "FLASH: DISABLED"}
               </button>
             </div>
             <br />
