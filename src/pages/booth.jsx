@@ -149,7 +149,7 @@ export default function TakePicturePage() {
       let asciiStrDark = "";
 
       const brightnessFactor = 1.89; // = +89%
-      const contrastFactor = 1.15; // = +50%
+      const contrastFactor = 1.15; // = +15%
 
       for (let i = 0; i < pixels.length; i += 4) {
         const r = pixels[i];
