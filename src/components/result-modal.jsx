@@ -8,8 +8,11 @@ export default function ResultModal({ asciiResult, onClose }) {
   const [isHovered, setIsHovered] = useState(false);
 
   const generateCanvas = (theme, callback) => {
-    // Split the ASCII result into lines for proper rendering
-    const lines = asciiResult.split("\n");
+    // 
+    const isDark = theme === "dark";
+    const currentAscii = isDark ? asciiResult.dark : asciiResult.light;
+
+    const lines = currentAscii.split("\n");
 
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
@@ -20,7 +23,6 @@ export default function ResultModal({ asciiResult, onClose }) {
     canvas.width = width;
     canvas.height = height;
 
-    const isDark = theme === "dark";
     const bgColor = isDark ? "#080808" : "#ffffff";
     const textColor = isDark ? "#c3fdff" : "#000000";
 

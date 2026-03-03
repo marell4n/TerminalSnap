@@ -100,7 +100,7 @@ export default function TakePicturePage() {
 
         canvas.width = size;
         canvas.height = size;
-        
+
         const ctx = canvas.getContext("2d");
 
         // Cut the center square from video feed and draw to canvas
@@ -145,27 +145,40 @@ export default function TakePicturePage() {
       ctx.drawImage(img, 0, 0, newWidth, newHeight);
 
       const pixels = ctx.getImageData(0, 0, newWidth, newHeight).data;
-      let asciiStr = "";
+      let asciiStrLight = "";
+      let asciiStrDark = "";
 
       const brightnessFactor = 1.89; // = +89%
-      const contrastFactor = 1.15;   // = +50%
+      const contrastFactor = 1.15; // = +50%
 
       for (let i = 0; i < pixels.length; i += 4) {
         const r = pixels[i];
         const g = pixels[i + 1];
         const b = pixels[i + 2];
+
         // Change to grayscale with brightness and contrast adjustment
         let gray = 0.299 * r + 0.587 * g + 0.114 * b;
         gray = ((gray - 128) * contrastFactor + 128) * brightnessFactor;
         gray = Math.max(0, Math.min(255, gray));
-        const charIndex = Math.floor(
-          (gray / 255) * (ASCII_CHARS.length - 1),
+
+        // For light theme (Normal)
+        const charIndex = Math.floor((gray / 255) * (ASCII_CHARS.length - 1));
+        asciiStrLight += ASCII_CHARS[charIndex];
+
+        // For dark theme (Inverted)
+        const invertedGray = 255 - gray;
+        const charIndexDark = Math.floor(
+          (invertedGray / 255) * (ASCII_CHARS.length - 1),
         );
-        asciiStr += ASCII_CHARS[charIndex];
-        if ((i / 4 + 1) % newWidth === 0) asciiStr += "\n";
+        asciiStrDark += ASCII_CHARS[charIndexDark];
+
+        if ((i / 4 + 1) % newWidth === 0) {
+          asciiStrLight += "\n";
+          asciiStrDark += "\n";
+        }
       }
 
-      setAsciiResult(asciiStr);
+      setAsciiResult({ light: asciiStrLight, dark: asciiStrDark });
       setShowModal(true);
     };
     img.src = capturedImg;
@@ -193,7 +206,14 @@ export default function TakePicturePage() {
               autoPlay
               playsInline
               muted
-              style={{ width: "100%", maxWidth: "800px", aspectRatio: "1 / 1", objectFit: "cover", display: "block", margin: "0 auto" }}
+              style={{
+                width: "100%",
+                maxWidth: "800px",
+                aspectRatio: "1 / 1",
+                objectFit: "cover",
+                display: "block",
+                margin: "0 auto",
+              }}
             />
             {countdown !== null && (
               <h1
@@ -213,7 +233,14 @@ export default function TakePicturePage() {
             src={capturedImg}
             alt="Captured"
             className="captured-img"
-            style={{ width: "100%", maxWidth: "800px", aspectRatio: "1 / 1", objectFit: "cover", display: "block", margin: "0 auto" }}
+            style={{
+              width: "100%",
+              maxWidth: "800px",
+              aspectRatio: "1 / 1",
+              objectFit: "cover",
+              display: "block",
+              margin: "0 auto",
+            }}
           />
         )}
       </div>
