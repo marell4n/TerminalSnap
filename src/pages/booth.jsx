@@ -29,6 +29,7 @@ export default function TakePicturePage() {
   const [isFlashEnabled, setIsFlashEnabled] = useState(true);
   const [capturedImg, setCapturedImg] = useState(null);
   const [isFrontCamera, setIsFrontCamera] = useState(true);
+  const [cameraError, setCameraError] = useState(null);
 
   // State Modal
   const [showModal, setShowModal] = useState(false);
@@ -41,11 +42,13 @@ export default function TakePicturePage() {
 
     // Start Camera if not captured yet and modal is not open
     if (!capturedImg && !showModal) {
+      setCameraError(null);
+
       navigator.mediaDevices
         .getUserMedia({
-          video: {
-            facingMode: isFrontCamera ? "user" : "environment",
-          },
+          video: isFrontCamera
+            ? { facingMode: "user" }
+            : { facingMode: { exact: "environment" } },
         })
         .then((stream) => {
           if (isMounted && videoRef.current) {
@@ -55,8 +58,38 @@ export default function TakePicturePage() {
             stream.getTracks().forEach((track) => track.stop());
           }
         })
-        .catch((err) => console.error("Kamera error:", err));
+        .catch((err) => {
+          console.error("Kamera error:", err);
+          if (isMounted) {
+            // if camera blocked
+            if (
+              err.name === "NotAllowedError" ||
+              err.name === "PermissionDeniedError"
+            ) {
+              setCameraError("CAMERA_ACCESS_DENIED");
+            }
+            // if back camera not available, fallback to front camera
+            else if (
+              err.name === "OverconstrainedError" ||
+              err.name === "NotFoundError"
+            ) {
+              if (!isFrontCamera) {
+                setCameraError("BACK_CAMERA_UNAVAILABLE");
+                // Automatically switch to front camera
+                setTimeout(() => {
+                  setCameraError(null);
+                  setIsFrontCamera(true);
+                }, 3000);
+              } else {
+                setCameraError("FRONT_CAMERA_UNAVAILABLE");
+              }
+            } else {
+              setCameraError("UNKNOWN_CAMERA_ERROR");
+            }
+          }
+        });
     }
+
     // Off Camera if state changed and switching page
     return () => {
       isMounted = false;
@@ -206,21 +239,38 @@ export default function TakePicturePage() {
       <div className="mb-4 position-relative d-inline-block">
         {!capturedImg ? (
           <>
-            <video
-              ref={videoRef}
-              autoPlay
-              playsInline
-              muted
-              style={{
-                width: "100%",
-                maxWidth: "800px",
-                aspectRatio: "1 / 1",
-                objectFit: "cover",
-                display: "block",
-                margin: "0 auto",
-                transform: isFrontCamera ? "scaleX(-1)" : "none",
-              }}
-            />
+            {cameraError ? (
+              <div
+                className="d-flex align-items-center justify-content-center"
+                style={{
+                  width: "100%",
+                  maxWidth: "800px",
+                  aspectRatio: "1 / 1",
+                  border: "2px solid var(--term-color)",
+                  margin: "0 auto",
+                  backgroundColor: "var(--term-bg)",
+                }}
+              >
+                <h3 style={{ color: "red" }}>[ {cameraError} ]</h3>
+              </div>
+            ) : (
+              <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                muted
+                style={{
+                  width: "100%",
+                  maxWidth: "800px",
+                  aspectRatio: "1 / 1",
+                  objectFit: "cover",
+                  display: "block",
+                  margin: "0 auto",
+                  transform: isFrontCamera ? "scaleX(-1)" : "none",
+                }}
+              />
+            )}
+            {/* Timer Countdown */}
             {countdown !== null && (
               <h1
                 className="position-absolute top-50 start-50 translate-middle fw-bold"
