@@ -177,8 +177,10 @@ export default function TakePicturePage() {
       canvas.height = newHeight;
 
       // Mirror
-      ctx.translate(newWidth, 0);
-      ctx.scale(-1, 1);
+      if (isFrontCamera) {
+        ctx.translate(newWidth, 0);
+        ctx.scale(-1, 1);
+      }
 
       ctx.drawImage(img, 0, 0, newWidth, newHeight);
 
