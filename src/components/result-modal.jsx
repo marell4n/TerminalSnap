@@ -5,7 +5,7 @@ import logoBlack from '../assets/logo-black.png';
 export default function ResultModal({ asciiResult, onClose }) {
   const [darkPreview, setDarkPreview] = useState(null);
   const [lightPreview, setLightPreview] = useState(null);
-  const [isHovered, setIsHovered] = useState(false);
+  const [isDark, setIsDark] = useState(false);
 
   const generateCanvas = (theme, callback) => {
     // 
@@ -127,8 +127,12 @@ export default function ResultModal({ asciiResult, onClose }) {
   return (
     <div className="modal-overlay">
       <div className="modal-terminal text-center">
+        <div className="d-flex justify-content-start mb-2">
+          <button className="btn btn-terminal px-3 fw-bold" onClick={onClose}>
+            [ X ]
+          </button>
+        </div>
         <h3 className="mb-2">/// PROCESSING_COMPLETE \\\</h3>
-        <p className="mb-4">Hover to see dark theme.</p>
 
         <div className="atm-machine"></div>
 
@@ -136,10 +140,8 @@ export default function ResultModal({ asciiResult, onClose }) {
           <div className="receipt">
             {darkPreview && lightPreview ? (
               <img
-                src={isHovered ? darkPreview : lightPreview}
+                src={isDark ? darkPreview : lightPreview}
                 alt="Terminal Receipt"
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
                 style={{
                   width: "auto",
                   height: "auto",
@@ -147,7 +149,6 @@ export default function ResultModal({ asciiResult, onClose }) {
                   maxHeight: "35vh",
                   display: "block",
                   margin: "0 auto",
-                  cursor: "crosshair",
                   transition: "opacity 0.2s ease-in-out",
                 }}
               />
@@ -160,9 +161,9 @@ export default function ResultModal({ asciiResult, onClose }) {
         <div className="d-flex justify-content-center flex-wrap gap-3 mt-4">
           <button
             className="btn btn-terminal px-4 py-2 fw-bold"
-            onClick={onClose}
+            onClick={() => setIsDark(!isDark)}
           >
-            [ CLOSE ]
+            [ PREVIEW: {isDark ? "LIGHT" : "DARK"} ]
           </button>
 
           <button

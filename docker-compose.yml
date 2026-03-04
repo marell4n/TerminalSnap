@@ -1,0 +1,11 @@
+services:
+  app:
+    image: node:20-slim
+    working_dir: /app
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+    tty: true
+    # Perintah agar otomatis install & jalankan dev server saat dinyalakan
+    command: sh -c "npm install && npm run dev -- --host"
