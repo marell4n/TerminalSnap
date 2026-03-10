@@ -5,7 +5,7 @@ import logoBlack from '../assets/logo-black.png';
 export default function ResultModal({ asciiResult, onClose }) {
   const [darkPreview, setDarkPreview] = useState(null);
   const [lightPreview, setLightPreview] = useState(null);
-  const [isDark, setIsDark] = useState(false);
+  const [isDark, setIsDark] = useState(true);
 
   const generateCanvas = (theme, callback) => {
     // 
@@ -146,7 +146,7 @@ export default function ResultModal({ asciiResult, onClose }) {
                   width: "auto",
                   height: "auto",
                   maxWidth: "100%",
-                  maxHeight: "35vh",
+                  maxHeight: "50vh",
                   display: "block",
                   margin: "0 auto",
                   transition: "opacity 0.2s ease-in-out",
@@ -162,6 +162,10 @@ export default function ResultModal({ asciiResult, onClose }) {
           <button
             className="btn btn-terminal px-4 py-2 fw-bold"
             onClick={() => setIsDark(!isDark)}
+            style={{
+              backgroundColor: isDark ? "white" : "transparent",
+              color: isDark ? "var(--term-bg)" : "var(--term-color)"
+            }}
           >
             [ PREVIEW: {isDark ? "LIGHT" : "DARK"} ]
           </button>

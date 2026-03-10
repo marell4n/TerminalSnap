@@ -93,7 +93,7 @@ video, .captured-img {
 
 .receipt {
   border: 1px dashed var(--term-color);
-  padding: 20px;
+  padding: 10px;
   background-color: #051515;
   animation: printReceipt 3s linear forwards;
   transform-origin: top;
