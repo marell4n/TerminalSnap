@@ -5,22 +5,24 @@ import logoBlack from '../assets/logo-black.png';
 export default function ResultModal({ asciiResult, onClose }) {
   const [darkPreview, setDarkPreview] = useState(null);
   const [lightPreview, setLightPreview] = useState(null);
-  const [isHovered, setIsHovered] = useState(false);
+  const [isDark, setIsDark] = useState(true);
 
   const generateCanvas = (theme, callback) => {
-    // Split the ASCII result into lines for proper rendering
-    const lines = asciiResult.split("\n");
+    // 
+    const isDark = theme === "dark";
+    const currentAscii = isDark ? asciiResult.dark : asciiResult.light;
+
+    const lines = currentAscii.split("\n");
 
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
 
-    const width = 950;
+    const width = 1000;
     const height = 340 + (lines.length * 8) + 250; // Logo Area (340) + Height Photo (sum of lines * 8px) + Footer Area (250)
 
     canvas.width = width;
     canvas.height = height;
 
-    const isDark = theme === "dark";
     const bgColor = isDark ? "#080808" : "#ffffff";
     const textColor = isDark ? "#c3fdff" : "#000000";
 
@@ -29,7 +31,7 @@ export default function ResultModal({ asciiResult, onClose }) {
 
     const drawContent = (logoImg) => {
       if (logoImg) {
-        const logoWidth = 550;
+        const logoWidth = 580;
         const logoHeight = (logoImg.height / logoImg.width) * logoWidth;
         ctx.drawImage(
           logoImg,
@@ -45,8 +47,8 @@ export default function ResultModal({ asciiResult, onClose }) {
         ctx.fillText("Terminal Snap", width / 2, 150);
       }
 
-      const startY = 340;
-      ctx.font = "bold 8px monospace";
+      const startY = 380;
+      ctx.font = "bold 6px monospace";
       ctx.fillStyle = textColor;
       ctx.textAlign = "left";
       ctx.letterSpacing = "3.5px";
@@ -57,16 +59,15 @@ export default function ResultModal({ asciiResult, onClose }) {
       let currentY = startY;
       lines.forEach((line) => {
         ctx.fillText(line, startX, currentY);
-        currentY += 8;
+        currentY += 7;
       });
 
       ctx.letterSpacing = "0px";
 
       let footerY = currentY + 30;
-      ctx.font = '24px "Courier New", monospace';
+      ctx.font = '30px "Courier New", monospace';
 
-      const quote =
-        "No pixels were harmed in the making of \nthis photo. Only characters.";
+      const quote = "No pixels were harmed in the making of \nthis photo. Only characters.";
       const quoteLines = quote.split("\n");
       const lineHeight = 26;
 
@@ -126,8 +127,12 @@ export default function ResultModal({ asciiResult, onClose }) {
   return (
     <div className="modal-overlay">
       <div className="modal-terminal text-center">
+        <div className="d-flex justify-content-start mb-2">
+          <button className="btn btn-terminal px-3 fw-bold" onClick={onClose}>
+            [ X ]
+          </button>
+        </div>
         <h3 className="mb-2">/// PROCESSING_COMPLETE \\\</h3>
-        <p className="mb-4">Hover to see dark theme.</p>
 
         <div className="atm-machine"></div>
 
@@ -135,18 +140,15 @@ export default function ResultModal({ asciiResult, onClose }) {
           <div className="receipt">
             {darkPreview && lightPreview ? (
               <img
-                src={isHovered ? darkPreview : lightPreview}
+                src={isDark ? darkPreview : lightPreview}
                 alt="Terminal Receipt"
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
                 style={{
                   width: "auto",
                   height: "auto",
                   maxWidth: "100%",
-                  maxHeight: "35vh",
+                  maxHeight: "50vh",
                   display: "block",
                   margin: "0 auto",
-                  cursor: "crosshair",
                   transition: "opacity 0.2s ease-in-out",
                 }}
               />
@@ -159,9 +161,13 @@ export default function ResultModal({ asciiResult, onClose }) {
         <div className="d-flex justify-content-center flex-wrap gap-3 mt-4">
           <button
             className="btn btn-terminal px-4 py-2 fw-bold"
-            onClick={onClose}
+            onClick={() => setIsDark(!isDark)}
+            style={{
+              backgroundColor: isDark ? "white" : "transparent",
+              color: isDark ? "var(--term-bg)" : "var(--term-color)"
+            }}
           >
-            [ CLOSE ]
+            [ PREVIEW: {isDark ? "LIGHT" : "DARK"} ]
           </button>
 
           <button

@@ -28,6 +28,8 @@ export default function TakePicturePage() {
   const [flash, setFlash] = useState(false);
   const [isFlashEnabled, setIsFlashEnabled] = useState(true);
   const [capturedImg, setCapturedImg] = useState(null);
+  const [isFrontCamera, setIsFrontCamera] = useState(true);
+  const [cameraError, setCameraError] = useState(null);
 
   // State Modal
   const [showModal, setShowModal] = useState(false);
@@ -40,8 +42,14 @@ export default function TakePicturePage() {
 
     // Start Camera if not captured yet and modal is not open
     if (!capturedImg && !showModal) {
+      setCameraError(null);
+
       navigator.mediaDevices
-        .getUserMedia({ video: true })
+        .getUserMedia({
+          video: isFrontCamera
+            ? { facingMode: "user" }
+            : { facingMode: { exact: "environment" } },
+        })
         .then((stream) => {
           if (isMounted && videoRef.current) {
             videoRef.current.srcObject = stream;
@@ -50,8 +58,38 @@ export default function TakePicturePage() {
             stream.getTracks().forEach((track) => track.stop());
           }
         })
-        .catch((err) => console.error("Kamera error:", err));
+        .catch((err) => {
+          console.error("Kamera error:", err);
+          if (isMounted) {
+            // if camera blocked
+            if (
+              err.name === "NotAllowedError" ||
+              err.name === "PermissionDeniedError"
+            ) {
+              setCameraError("CAMERA_ACCESS_DENIED");
+            }
+            // if back camera not available, fallback to front camera
+            else if (
+              err.name === "OverconstrainedError" ||
+              err.name === "NotFoundError"
+            ) {
+              if (!isFrontCamera) {
+                setCameraError("BACK_CAMERA_UNAVAILABLE");
+                // Automatically switch to front camera
+                setTimeout(() => {
+                  setCameraError(null);
+                  setIsFrontCamera(true);
+                }, 3000);
+              } else {
+                setCameraError("FRONT_CAMERA_UNAVAILABLE");
+              }
+            } else {
+              setCameraError("UNKNOWN_CAMERA_ERROR");
+            }
+          }
+        });
     }
+
     // Off Camera if state changed and switching page
     return () => {
       isMounted = false;
@@ -67,7 +105,7 @@ export default function TakePicturePage() {
         stream.getTracks().forEach((track) => track.stop());
       }
     };
-  }, [capturedImg, showModal]);
+  }, [capturedImg, showModal, isFrontCamera]);
 
   const handleTakePhoto = () => {
     if (timerStatus === 0) {
@@ -100,7 +138,7 @@ export default function TakePicturePage() {
 
         canvas.width = size;
         canvas.height = size;
-        
+
         const ctx = canvas.getContext("2d");
 
         // Cut the center square from video feed and draw to canvas
@@ -109,7 +147,7 @@ export default function TakePicturePage() {
       }
     };
 
-    if (isFlashEnabled) {
+    if (isFlashEnabled && isFrontCamera) {
       setFlash(true);
       setTimeout(() => {
         takePhoto();
@@ -131,8 +169,7 @@ export default function TakePicturePage() {
       const ctx = canvas.getContext("2d", { willReadFrequently: true });
       if (!ctx) return;
 
-      const newWidth = 100;
-      const fontRatio = 0.55; // Adjust this ratio to better fit the font's aspect ratio
+      const newWidth = 120;
       const aspectRatio = img.height / img.width;
       const newHeight = Math.floor(aspectRatio * newWidth);
 
@@ -140,33 +177,48 @@ export default function TakePicturePage() {
       canvas.height = newHeight;
 
       // Mirror
-      ctx.translate(newWidth, 0);
-      ctx.scale(-1, 1);
+      if (isFrontCamera) {
+        ctx.translate(newWidth, 0);
+        ctx.scale(-1, 1);
+      }
 
       ctx.drawImage(img, 0, 0, newWidth, newHeight);
 
       const pixels = ctx.getImageData(0, 0, newWidth, newHeight).data;
-      let asciiStr = "";
+      let asciiStrLight = "";
+      let asciiStrDark = "";
 
-      const brightnessFactor = 1.2; // 1.2 = +20%
-      const contrastFactor = 1.5;   // 1.5 = +50%
+      const brightnessFactor = 1.89; // = +89%
+      const contrastFactor = 1.15; // = +15%
 
       for (let i = 0; i < pixels.length; i += 4) {
         const r = pixels[i];
         const g = pixels[i + 1];
         const b = pixels[i + 2];
+
         // Change to grayscale with brightness and contrast adjustment
         let gray = 0.299 * r + 0.587 * g + 0.114 * b;
         gray = ((gray - 128) * contrastFactor + 128) * brightnessFactor;
         gray = Math.max(0, Math.min(255, gray));
-        const charIndex = Math.floor(
-          (gray / 255) * (ASCII_CHARS.length - 1),
+
+        // For light theme (Normal)
+        const charIndex = Math.floor((gray / 255) * (ASCII_CHARS.length - 1));
+        asciiStrLight += ASCII_CHARS[charIndex];
+
+        // For dark theme (Inverted)
+        const invertedGray = 255 - gray;
+        const charIndexDark = Math.floor(
+          (invertedGray / 255) * (ASCII_CHARS.length - 1),
         );
-        asciiStr += ASCII_CHARS[charIndex];
-        if ((i / 4 + 1) % newWidth === 0) asciiStr += "\n";
+        asciiStrDark += ASCII_CHARS[charIndexDark];
+
+        if ((i / 4 + 1) % newWidth === 0) {
+          asciiStrLight += "\n";
+          asciiStrDark += "\n";
+        }
       }
 
-      setAsciiResult(asciiStr);
+      setAsciiResult({ light: asciiStrLight, dark: asciiStrDark });
       setShowModal(true);
     };
     img.src = capturedImg;
@@ -189,13 +241,38 @@ export default function TakePicturePage() {
       <div className="mb-4 position-relative d-inline-block">
         {!capturedImg ? (
           <>
-            <video
-              ref={videoRef}
-              autoPlay
-              playsInline
-              muted
-              style={{ width: "100%", maxWidth: "800px", aspectRatio: "1 / 1", objectFit: "cover", display: "block", margin: "0 auto" }}
-            />
+            {cameraError ? (
+              <div
+                className="d-flex align-items-center justify-content-center"
+                style={{
+                  width: "100%",
+                  maxWidth: "800px",
+                  aspectRatio: "1 / 1",
+                  border: "2px solid var(--term-color)",
+                  margin: "0 auto",
+                  backgroundColor: "var(--term-bg)",
+                }}
+              >
+                <h3 style={{ color: "red" }}>[ {cameraError} ]</h3>
+              </div>
+            ) : (
+              <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                muted
+                style={{
+                  width: "100%",
+                  maxWidth: "800px",
+                  aspectRatio: "1 / 1",
+                  objectFit: "cover",
+                  display: "block",
+                  margin: "0 auto",
+                  transform: isFrontCamera ? "scaleX(-1)" : "none",
+                }}
+              />
+            )}
+            {/* Timer Countdown */}
             {countdown !== null && (
               <h1
                 className="position-absolute top-50 start-50 translate-middle fw-bold"
@@ -214,7 +291,15 @@ export default function TakePicturePage() {
             src={capturedImg}
             alt="Captured"
             className="captured-img"
-            style={{ width: "100%", maxWidth: "800px", aspectRatio: "1 / 1", objectFit: "cover", display: "block", margin: "0 auto" }}
+            style={{
+              width: "100%",
+              maxWidth: "800px",
+              aspectRatio: "1 / 1",
+              objectFit: "cover",
+              display: "block",
+              margin: "0 auto",
+              transform: isFrontCamera ? "scaleX(-1)" : "none",
+            }}
           />
         )}
       </div>
@@ -248,10 +333,21 @@ export default function TakePicturePage() {
               </div>
 
               <button
-                className={`btn btn-terminal ${isFlashEnabled ? "active" : ""}`}
-                onClick={() => setIsFlashEnabled(!isFlashEnabled)}
+                className="btn btn-terminal"
+                onClick={() => setIsFrontCamera(!isFrontCamera)}
               >
-                FLASH: {isFlashEnabled ? "ON" : "OFF"}
+                [ FLIP_CAM ]
+              </button>
+
+              <button
+                className={`btn btn-terminal ${isFlashEnabled && isFrontCamera ? "active" : ""}`}
+                onClick={() => setIsFlashEnabled(!isFlashEnabled)}
+                disabled={!isFrontCamera}
+                style={{ opacity: !isFrontCamera ? 0.5 : 1 }}
+              >
+                {isFrontCamera
+                  ? `FLASH: ${isFlashEnabled ? "ON" : "OFF"}`
+                  : "FLASH: DISABLED"}
               </button>
             </div>
             <br />
